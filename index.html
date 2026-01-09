@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Heart Affirmations</title>
+  <style>
+    :root{
+      --bg1:#fff0f6;
+      --bg2:#ffe3ec;
+      --ink:#2b1b22;
+      --heart1:#ff4d8d;
+      --heart2:#ff2d6f;
+      --panel:#ffffffcc;
+      --shadow: 0 18px 45px rgba(0,0,0,.12);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      background: radial-gradient(1200px 800px at 30% 20%, var(--bg1), transparent 60%),
+                  radial-gradient(900px 700px at 70% 70%, var(--bg2), transparent 55%),
+                  linear-gradient(180deg, #fff, #fff5f8);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      padding:24px;
+    }
+
+    .wrap{
+      width:min(520px, 92vw);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:16px;
+    }
+
+    /* Heart container */
+    .heart{
+      width:min(440px, 90vw);
+      aspect-ratio: 1 / 1;
+      position:relative;
+      filter: drop-shadow(var(--shadow));
+    }
+
+    .heart::before,
+    .heart::after{
+      content:"";
+      position:absolute;
+      width:52%;
+      height:78%;
+      top:10%;
+      background: linear-gradient(180deg, #fff, var(--panel));
+      border-radius: 999px 999px 120px 120px;
+    }
+    .heart::before{ left:21%; transform: rotate(-45deg); transform-origin: 50% 100%; }
+    .heart::after { right:21%; transform: rotate(45deg);  transform-origin: 50% 100%; }
+
+    .card{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:64px 48px 78px;
+      text-align:center;
+      z-index:2;
+    }
+
+    .quote{
+      width:100%;
+      max-width: 360px;
+      font-size: clamp(18px, 2.7vw, 22px);
+      line-height:1.35;
+      font-weight:650;
+      letter-spacing:.2px;
+      color: #2a1820;
+      text-shadow: 0 1px 0 rgba(255,255,255,.7);
+      opacity:.98;
+    }
+
+    .hint{
+      margin-top:10px;
+      font-size:12px;
+      opacity:.75;
+      font-weight:600;
+    }
+
+    /* Heart button */
+    .btn-heart{
+      --s: 92px;
+      width:var(--s);
+      height:var(--s);
+      border:none;
+      cursor:pointer;
+      background: linear-gradient(180deg, var(--heart1), var(--heart2));
+      position:relative;
+      transform: rotate(-45deg);
+      border-radius: 18px;
+      box-shadow: 0 18px 35px rgba(255, 45, 111, .25);
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+      outline: none;
+    }
+    .btn-heart::before,
+    .btn-heart::after{
+      content:"";
+      position:absolute;
+      width:100%;
+      height:100%;
+      background: inherit;
+      border-radius: 50%;
+    }
+    .btn-heart::before{ top:-50%; left:0; }
+    .btn-heart::after { left:50%; top:0; }
+
+    .btn-heart span{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      transform: rotate(45deg);
+      color:white;
+      font-weight:800;
+      letter-spacing:.4px;
+      text-shadow: 0 2px 10px rgba(0,0,0,.25);
+      font-size: 14px;
+      user-select:none;
+    }
+
+    .btn-heart:hover{
+      filter: brightness(1.03);
+      box-shadow: 0 20px 45px rgba(255, 45, 111, .32);
+    }
+    .btn-heart:active{
+      transform: rotate(-45deg) scale(.96);
+      box-shadow: 0 12px 28px rgba(255, 45, 111, .26);
+    }
+
+    /* Little sparkle dots */
+    .sparkles{
+      position:absolute;
+      inset:-12px;
+      pointer-events:none;
+      z-index:1;
+      opacity:.9;
+    }
+    .dot{
+      position:absolute;
+      width:10px; height:10px;
+      border-radius:999px;
+      background: rgba(255, 77, 141, .35);
+      filter: blur(.2px);
+      animation: float 4.8s ease-in-out infinite;
+    }
+    .dot:nth-child(1){ left:12%; top:18%; animation-delay:0s; }
+    .dot:nth-child(2){ left:82%; top:22%; width:7px; height:7px; animation-delay:.6s; }
+    .dot:nth-child(3){ left:18%; top:76%; width:6px; height:6px; animation-delay:1.1s; }
+    .dot:nth-child(4){ left:78%; top:74%; width:9px; height:9px; animation-delay:1.7s; }
+    .dot:nth-child(5){ left:50%; top:10%; width:6px; height:6px; animation-delay:2.2s; }
+
+    @keyframes float{
+      0%,100%{ transform: translateY(0); opacity:.55; }
+      50%{ transform: translateY(-10px); opacity:1; }
+    }
+
+    /* Fade/slide for text */
+    .fade{
+      animation: pop .22s ease-out;
+    }
+    @keyframes pop{
+      from{ transform: translateY(6px) scale(.98); opacity:.15; }
+      to  { transform: translateY(0)   scale(1);    opacity:1; }
+    }
+
+    /* Footer mini controls */
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .pill{
+      border:1px solid rgba(0,0,0,.08);
+      background:#ffffffb8;
+      padding:9px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:650;
+      cursor:pointer;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .pill:hover{ transform: translateY(-1px); background:#fff; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="heart" aria-label="Affirmation heart">
+      <div class="sparkles" aria-hidden="true">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+
+      <div class="card">
+        <div>
+          <div id="quote" class="quote">Click the heart to receive an affirmation 💗</div>
+          <div class="hint">Tip: press <kbd>Space</kbd> or <kbd>Enter</kbd>, too.</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-heart" id="btn" type="button" aria-label="Show an affirmation">
+      <span>CLICK</span>
+    </button>
+
+    <div class="row">
+      <button class="pill" id="copy" type="button">Copy affirmation</button>
+      <button class="pill" id="shuffle" type="button">Shuffle mode: ON</button>
+    </div>
+  </div>
+
+  <script>
+    const affirmations = [
+      "My worth is inherent. I am worthy even when experiencing negative emotion or when I have made a mistake",
+      "I am worthy and a good person even when unproductive, upset, or overwhelmed",
+      "I am welcome here.",
+      "My presence is a delight to others.",
+      "I choose authenticity over perfection.", 
+      "It is safe for me to be my authentic self.", 
+      "I am strong, capable, and resilient.", 
+      "I am enough, just as I am.", 
+      "I have the courage to be seen.", 
+      "I am proud of myself for showing up and doing the work", 
+      "I own my power and recognize my own strength.", 
+      "It is ok for me to feel anxious. I respond to my anxiety with love and compassion.", 
+      "I seek connection, not validation. I am always worthy, and I validate myself.", 
+      "I am loved for my authenticity, not for the illusion of perfection.", 
+      "I am capable of handling anything.", 
+      "I am worthy of happiness, joy, and lasting friendships.", 
+      "Failure is how I learn",
+      "I will keep fighting for my happiness",
+      "Mistakes are how I learn", 
+      "I deserve to be treated with respect, just like anyone else", 
+      "Just because I made a mistake doesn't mean that I am a mistake", 
+      "I do not have to be perfect to be safe or loved in the present. I am letting go of relationships that require perfection. I have the right to make mistakes. Mistakes do not make me a mistake. Every mistake or mishap is an opportunity to practice loving myself in the places I have never been loved.", 
+      "I advocate for myself. I am on my side. I am a good enough person. I refuse to trash myself. I turn shame back into blame and disgust and externalize it to anyone who shames my normal feelings and foibles.", 
+      "I will not judge myself for not being at peak performance all the time. In a society that pressures us into acting happy all the time, I will not get down on myself for feeling bad",
+      "Feeling guilt doesn't mean I am guilty. I refuse to make my decisions and choices out of guilt. In the inevitable instance when I hurt someone, I will apologize, make ammends, and let go of my guilt."
+      "I have a right to reject unfair criticism or perfectionist expectations from anyone. Even when afraid, I will defend myself from unfair criticism. I won't let fear make my decisions.",
+      "I am allowed to be human. I am trying and that is what matters.",
+      "I am allowed to exist as I am. Just like a tree, I have a right to be here.", 
+      "I am allowed to change over time",
+      "I approve of myself",
+      "I am a good enough person",
+      "I do not need to be perfect to be good",
+      "Feeling bad does not mean I am bad",
+      "I can forgive myself without becoming careless",
+      "I can trust my perceptions as valid information",
+      "Confusion does not mean I am wrong",
+      "I can make decisions without certainty",
+      "I can trust myself to make the best decision for me",
+      "I can trust myself incrementally",
+      "I have choices even when limited",
+      "I am safe enough right now.",
+      "I can be uncomfortable and still safe",
+      "My nervous system can downshift",
+      "Right now is different from then",
+      "I can trust myself to notice danger",
+      "I am allowed to say no",
+      "I don’t need to justify my boundaries",
+      "Boundaries increase safety",
+      "I belong by existing",
+      "I don’t need to perform to belong",
+      "Not everyone is my people. I will find my community where I belong.",
+      "Slow belonging is real belonging",
+      "I belong to myself first",
+      "Not everyone will understand me and that is ok. I understand and validate my own perspective.", 
+      "Friendships grow through repeated contact", 
+      "Ruptures can be repaired",
+      "Isolation was adaptive not defective",
+      "I can choose connection gradually",
+      "I can re-enter connection at my pace",
+      "Isolation is a state not who I am",
+      "Healing is nonlinear",
+      "Trauma responses are not who I am",
+      "Closeness does not equal danger",
+      "Panic is uncomfortable not dangerous",
+      "Panic always peaks and falls",
+      "Discomfort is not danger",
+      "My body can handle anxiety",
+      "Social skills can be learned",
+      "I am allowed to belong now",
+      "I am more than any one part of me",
+      "All parts have a protective intention",
+      "Protectors act to protect me from pain",
+      "Younger parts deserve care not judgment",
+      "My Self can lead with calm curiosity",
+      "The critic is trying to prevent harm",
+      "I trust myself",
+      "I am allowed to seek a way out of survival mode",
+      "I can learn financial skills over time",
+      "There is room for me to succeed",
+      "I can have wealth and stability.", 
+      "I am allowed to receive without guilt",
+      "Success does not require burnout",
+      "I can define success for myself",
+      "Wealth builds over time",
+      "I can recover from financial mistakes",
+      "I don’t need to match others to be successful",
+      "Money can support freedom",
+      "I can trust myself with increasing resources",
+      "I am intelligent, smart, and incredibly capable even when learning is hard",
+      "Understanding grows with effort and time",
+      "I can learn complex and abstract things",
+      "I learn more and more every day and that is beautiful",
+      "I am capable of mastering difficult skills",
+      "I can break big challenges into learnable parts",
+      "I improve through practice not pressure",
+      "I can handle intellectually demanding work",
+      "I am capable of exceptional work",
+      "I can perform at a high level consistently",
+      "I am an incredibly talented person",
+      "I am smart", 
+      "I deserve to succeed in rigorous environments",
+      "Being challenged means I am growing not failing",
+      "I am capable of amazing things",
+      "My potential is real and unfolding",
+      "Success can come from steadiness not perfection",
+      "I can pursue ambitious goals sustainably",
+      "I am allowed to want excellence and ease",
+      "I love learning new things.", 
+      "Intelligence and kindness can coexist",
+      "I can build a meaningful impressive life",
+      "I am capable of long-term success",
+      "I can be myself and still be loved",
+      "My needs, wants, and dreams matter", 
+      "I am no longer a child. I am an adult who is capable, confident, and incredibly gifted.", 
+      "I can handle any obstacle.", 
+      "I will survive this and make it to a happier place.", 
+      "It is ok to be angry. My anger expresses unmet needs that I need to address."
+    ];
+
+    const quoteEl = document.getElementById("quote");
+    const btn = document.getElementById("btn");
+    const copyBtn = document.getElementById("copy");
+    const shuffleBtn = document.getElementById("shuffle");
+
+    let shuffleMode = true;
+    let index = 0;
+
+    // Fisher–Yates shuffle (in-place)
+    function shuffleArray(arr){
+      for(let i = arr.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Make a queue so you don't repeat until you've seen them all
+    let queue = shuffleArray([...affirmations]);
+
+    function nextAffirmation(){
+      if(shuffleMode){
+        if(queue.length === 0) queue = shuffleArray([...affirmations]);
+        return queue.pop();
+      } else {
+        const a = affirmations[index % affirmations.length];
+        index++;
+        return a;
+      }
+    }
+
+    function showAffirmation(){
+      const text = nextAffirmation();
+      quoteEl.textContent = text;
+
+      // retrigger animation
+      quoteEl.classList.remove("fade");
+      void quoteEl.offsetWidth;
+      quoteEl.classList.add("fade");
+    }
+
+    async function copyAffirmation(){
+      const text = quoteEl.textContent.trim();
+      if(!text || text.includes("Click the heart")) return;
+      try{
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => (copyBtn.textContent = "Copy affirmation"), 900);
+      } catch {
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => (copyBtn.textContent = "Copy affirmation"), 900);
+      }
+    }
+
+    function toggleShuffle(){
+      shuffleMode = !shuffleMode;
+      shuffleBtn.textContent = `Shuffle mode: ${shuffleMode ? "ON" : "OFF"}`;
+      if(shuffleMode) queue = shuffleArray([...affirmations]);
+    }
+
+    btn.addEventListener("click", showAffirmation);
+    copyBtn.addEventListener("click", copyAffirmation);
+    shuffleBtn.addEventListener("click", toggleShuffle);
+
+    // keyboard support
+    window.addEventListener("keydown", (e) => {
+      if(e.code === "Space" || e.code === "Enter"){
+        e.preventDefault();
+        showAffirmation();
+      }
+    });
+  </script>
+</body>
+</html>
